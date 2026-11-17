@@ -6,17 +6,11 @@
 /** Initializes a new Square Dance game and starts running it. */
 class Main {
     function void main() {
-        /*
-        var GhostGame game;
-        let game = GhostGame.new();
+        var GameManager game;
+        let game = GameManager.new();
         do game.run();
-        do game.dispose();
-        */
-
-        var HumanGame game;
-        let game = HumanGame.new();
-        do game.run();
-        do game.dispose();
+        do game.dispose(); 
         return;
+        
     }
 }

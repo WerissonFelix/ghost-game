@@ -1,5 +1,58 @@
 class GameManager{
     
-    field Ghost ghost;
-    field Human human;
+    field GhostGame ghost;
+    field HumanGame human;
+    field int ghostDirection;
+    field int humanDirection;
+
+
+    constructor GameManager new(){
+        let ghost = GhostGame.new();
+        let human = HumanGame.new();
+        let ghostDirection = 0;
+        let humanDirection = 0;
+
+        return this;
+    }
+
+    method void dispose(){
+        do ghost.dispose();
+        do human.dispose();
+        do Memory.deAlloc(this);
+
+        return;
+    }
+
+    method void run() {
+        var char key;  // the key currently pressed by the user
+        var boolean exit;
+        let exit = false;
+        
+        while (~exit) {
+            // waits for a key to be pressed
+            
+            let key = Keyboard.keyPressed();
+
+            // Ghost Direction
+            if (key = 81)  { let exit = true; }     // q key
+            if (key = 131) { do ghost.setDirection(1); }   // up arrow
+            if (key = 133) { do ghost.setDirection(2); }   // down arrow
+            if (key = 130) { do ghost.setDirection(3); }   // left arrow
+            if (key = 132) { do ghost.setDirection(4); }   // right arrow
+
+            // Human Direction    
+            if (key = 81)  { let exit = true; }     // q key
+            if (key = 119) { do human.setDirection(1); }   // W - up
+            if (key = 115) { do human.setDirection(2); }   // S - down
+            if (key = 97)  { do human.setDirection(3); }   // A - left
+            if (key = 100) { do human.setDirection(4); }   // D - right
+
+            do ghost.moveGhost();
+            do human.moveHuman();
+            do Sys.wait(50);
+            
+
+        } // while
+        return;
+   }
 }

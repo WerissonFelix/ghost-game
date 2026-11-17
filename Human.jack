@@ -27,7 +27,7 @@ class Human {
    }
 
    /** Draws the square on the screen. */
-   method void draw() {
+  method void draw() {
       do drawHuman(y*32+(x/size));
       return;
    }
@@ -35,7 +35,7 @@ class Human {
    /** Erases the square from the screen. */
    method void erase() {
       do Screen.setColor(false);
-      do Screen.drawRectangle(x, y, x + size, y + size);
+      do Screen.drawRectangle(x, y + 16, x + size, y + size + 16);
       return;
    }
 

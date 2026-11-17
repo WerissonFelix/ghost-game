@@ -24,7 +24,7 @@ class HumanGame {
    constructor HumanGame new() {
       // Creates a 30 by 30 pixels square and positions it at the top-left
       // of the screen.
-      let human = Human.new(10, 10);
+      let human = Human.new(16, 16);
       let random = Random.new(19);
       let direction = 0;  // initial state is no movement
       return this;
@@ -47,38 +47,10 @@ class HumanGame {
       return;
    }
 
-   /** Runs the game: handles the user's inputs and moves the square accordingly */
-   method void run() {
-      var char key;  // the key currently pressed by the user
-      var boolean exit;
-      let exit = false;
-      
-    while (~exit) {
+   method void setDirection(int new_direction){
+      let direction = new_direction;
 
-        // waits for a key to be pressed
-        while (key = 0) {
-           let key = Keyboard.keyPressed();
-           do moveHuman();
-           do Sys.wait(50);
-           // let direction = random.randRange(4);
-        }
-        if (key = 81)  { let exit = true; }     // q key
-        // if (key = 90)  { do human.decSize(); } // z key
-        // if (key = 88)  { do human.incSize(); } // x key
-        if (key = 119) { let direction = 1; }   // W - up
-        if (key = 115) { let direction = 2; }   // S - down
-        if (key = 97) { let direction = 3; }   // A - left
-        if (key = 100) { let direction = 4; }   // D - right
-
-         // waits for the key to be released
-         while (~(key = 0)) {
-            let key = Keyboard.keyPressed();
-            do moveHuman();
-            do Sys.wait(50);
-         }
-         let direction = 0; 
-     } // while
-     return;
+      return;
    }
 }
 
