@@ -6,8 +6,6 @@ Reference: http://nand2tetris-questions-and-answers-forum.32033.n3.nabble.com/Ra
 There is no random generator in Jack
 So we need to generate pseudo random number by ourself
 This class is quite simple random number generator
-
-Improvement: let the number be more random by adding shift number
 **/
 
 class Random {
