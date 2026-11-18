@@ -21,9 +21,9 @@ class GhostGame {
    field Ghost ghost;
 
    /** Constructs a new Square Game. */
-   constructor GhostGame new() {
-      let ghost = Ghost.new(496, 0);
-      let random = Random.new(19);
+   constructor GhostGame new(int Ax, int Ay) {
+      let ghost = Ghost.new(Ax, Ay);
+      let random = Random.new(2);
       let direction = 0;  // initial state is no movement
       return this;
    }

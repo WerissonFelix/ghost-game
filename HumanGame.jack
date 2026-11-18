@@ -21,8 +21,8 @@ class HumanGame {
    field Human human;
 
    /** Constructs a new Square Game. */
-   constructor HumanGame new() {
-      let human = Human.new(0, 0);
+   constructor HumanGame new(int Ax, int Ay) {
+      let human = Human.new(Ax, Ay);
       let random = Random.new(19);
       let direction = 0;  // initial state is no movement
       return this;

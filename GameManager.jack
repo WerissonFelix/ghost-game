@@ -9,7 +9,7 @@ class GameManager{
     field int humanDirection;
 
     constructor GameManager new() {
-        let random = Random.new(14);
+        let random = Random.new(20);
         let map = GameMap.new();
         let level = 0;
         let ghostDirection = 0;
@@ -29,6 +29,7 @@ class GameManager{
     method boolean playersCollided() {
         var int ghostX, ghostY, ghostSize;
         var int humanX, humanY, humanSize;
+        var boolean xTouch, yTouch;
 
         let ghostX = ghost.getX();
         let ghostY = ghost.getY();
@@ -41,6 +42,13 @@ class GameManager{
         if ((humanX + humanSize) < ghostX) { return false; }
         if ((ghostY + ghostSize) < humanY) { return false; }
         if ((humanY + humanSize) < ghostY) { return false; }
+
+        let xTouch = ((ghostX + ghostSize) = humanX) | ((humanX + humanSize) = ghostX);
+        let yTouch = ((ghostY + ghostSize) = humanY) | ((humanY + humanSize) = ghostY);
+        if (xTouch & yTouch) { 
+            return false; 
+            
+            }
 
         return true;
     }
@@ -90,8 +98,7 @@ class GameManager{
     }
 
     method void startRound() {
-        // gc = ghost column, gr = ghost row, hc = human column, hr = human row
-        var int gc, gr, hc, hr;
+        var int ghostColumn, ghostRow, humanColumn, humanRow;
 
         do map.load(level);
         do map.draw();
@@ -102,25 +109,26 @@ class GameManager{
         }
 
         // random position for the ghost, not a wall
-        let gc = random.randRange(31);
-        let gr = 1 + random.randRange(14);
-        while (map.isWall(gc, gr)) {
-            let gc = random.randRange(31);
-            let gr = 1 + random.randRange(14);
+        let ghostColumn = random.randRange(31);
+        let ghostRow = 1 + random.randRange(14);
+        while (map.isWall(ghostColumn, ghostRow)) {
+            let ghostColumn = random.randRange(31);
+            let ghostRow = 1 + random.randRange(14);
         }
 
         // random position for the human, not a wall and not the same as the ghost
-        let hc = random.randRange(31);
-        let hr = 1 + random.randRange(14);
-        while (map.isWall(hc, hr) | ((hc = gc) & (hr = gr))) {
-            let hc = random.randRange(31);
-            let hr = 1 + random.randRange(14);
+        let humanColumn = random.randRange(31);
+        let humanRow = 1 + random.randRange(14);
+        while (map.isWall(humanColumn, humanRow) | ((humanColumn = ghostColumn) & (humanRow = ghostRow))) {
+            let humanColumn = random.randRange(31);
+            let humanRow = 1 + random.randRange(14);
         }
 
-        let ghost = GhostGame.new();
-        do ghost.setPosition(gc * 16, gr * 16);
-        let human = HumanGame.new();
-        do human.setPosition(hc * 16, hr * 16);
+        let ghost = GhostGame.new(ghostColumn * 16, ghostRow * 16);
+
+        //do ghost.setPosition();
+        let human = HumanGame.new(humanColumn * 16, humanRow * 16);
+        //do human.setPosition();
         return;
     }
 }
