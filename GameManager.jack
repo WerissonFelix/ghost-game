@@ -27,8 +27,12 @@ class GameManager{
     }
 
     method void dispose(){
-        do ghost.dispose();
-        do human.dispose();
+        if (~(ghost = 0)) {
+            do ghost.dispose();
+        }
+        if (~(human = 0)) {
+            do human.dispose();
+        }
         do map.dispose();
         do Memory.deAlloc(this);
 
@@ -65,23 +69,31 @@ class GameManager{
     method void run() {
         var char key;  // the key currently pressed by the user
         var boolean exit;
-        var int seed;
+        var int count;
 
         do Screen.clearScreen();
-        do Output.moveCursor(10, 12);
-        do Output.printString("APERTE ENTER PARA COMECAR");
+        do Output.moveCursor(5, 23);
+        do Output.printString("GHOST MULTIPLAYER");
+        do Output.moveCursor(8, 10);
+        do Output.printString("Jogador 1 (Fantasma): setas = direcao, . = parar");
+        do Output.moveCursor(10, 10);
+        do Output.printString("Jogador 2 (Pessoa): W A S D = direcao, E = parar");
+        do Output.moveCursor(12, 10);
+        do Output.printString("ESC = sair");
+        do Output.moveCursor(15, 17);
+        do Output.printString("Pressione ENTER para comecar");
 
-        // Avoid using a key that was already held when the title screen appeared.
-        while (Keyboard.keyPressed() > 0) {
-            do Sys.wait(1);
+        let key = 0;
+        let count = 0;
+        while (~(key = 128) & ~(key = 140)) {   // 128 = ENTER, 140 = ESC
+            let key = Keyboard.keyPressed();
+            let count = count + 1;
         }
-
-        let seed = 0;
-        while (~(Keyboard.keyPressed() = 128)) {
-            let seed = seed + 1;
-            do Sys.wait(1);
+        do random.setSeed(count);
+        while (~(Keyboard.keyPressed() = 0)) {}  // espera soltar a tecla
+        if (key = 140) {
+            return;
         }
-        do random.setSeed(seed);
 
         do Screen.clearScreen();
         do startRound();
@@ -92,9 +104,9 @@ class GameManager{
         do Output.printString("HUMAN: ");
         do humanTimer.printTime(0, 7);
 
-        do Output.moveCursor(1, 0);
+        do Output.moveCursor(0, 56);
         do Output.printString("GHOST: ");
-        do ghostTimer.printTime(1, 7);
+        do ghostTimer.printTime(0, 63);
         
         while (~exit) {
             // waits for a key to be pressed
@@ -140,7 +152,7 @@ class GameManager{
                 else{
                     if (~(ghostTimer.isFinished())){
                         do ghostTimer.decrement();
-                        do ghostTimer.printTime(1, 7);
+                        do ghostTimer.printTime(0, 32);
 
                     }
 
