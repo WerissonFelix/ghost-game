@@ -41,7 +41,7 @@ class GhostGame {
       if (direction = 2) { do ghost.moveDown(); }
       if (direction = 3) { do ghost.moveLeft(); }
       if (direction = 4) { do ghost.moveRight(); }
-      do Sys.wait(5);  // delays the next movement
+      
       return;
    }
 

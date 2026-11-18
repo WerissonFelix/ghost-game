@@ -41,7 +41,7 @@ class HumanGame {
       if (direction = 2) { do human.moveDown(); }
       if (direction = 3) { do human.moveLeft(); }
       if (direction = 4) { do human.moveRight(); }
-      do Sys.wait(5);  // delays the next movement
+      
       return;
    }
    method int getDirection() {

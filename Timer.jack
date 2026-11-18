@@ -1,0 +1,39 @@
+class Timer{
+
+    field int segundos; 
+
+    constructor Timer new(int qtd_segundos){
+        let segundos = qtd_segundos;
+
+        return this;
+    }
+
+    method void printTime(int row, int column){
+        do Output.moveCursor(row, column);
+        do Output.printInt(segundos);
+
+        return;
+    }
+
+    method int decrement(){
+        if (segundos > 0){
+            let segundos = segundos - 1;
+
+            return segundos;
+        }
+        else{
+            return 0;
+        }
+       
+    }
+
+    method boolean isFinished(){
+        return segundos = 0;
+    }
+
+    method void setSegundos(int qtd_segundos){
+        let segundos = qtd_segundos;
+
+        return;
+    }
+}
