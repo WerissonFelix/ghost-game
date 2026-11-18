@@ -33,6 +33,12 @@ class Random {
         return seed;
     }
 
+    method void setSeed(int newSeed) {
+        let seed = newSeed;
+        let calledTime = 0;
+        return;
+    }
+
     method int randRange(int range) {
         /** return a random number in the range 0..range */
         var int mask;

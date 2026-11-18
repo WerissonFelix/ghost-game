@@ -56,6 +56,25 @@ class GameManager{
     method void run() {
         var char key;  // the key currently pressed by the user
         var boolean exit;
+        var int seed;
+
+        do Screen.clearScreen();
+        do Output.moveCursor(10, 12);
+        do Output.printString("APERTE ENTER PARA COMECAR");
+
+        // Avoid using a key that was already held when the title screen appeared.
+        while (Keyboard.keyPressed() > 0) {
+            do Sys.wait(1);
+        }
+
+        let seed = 0;
+        while (~(Keyboard.keyPressed() = 128)) {
+            let seed = seed + 1;
+            do Sys.wait(1);
+        }
+        do random.setSeed(seed);
+
+        do Screen.clearScreen();
         do startRound();
         let exit = false;
         
