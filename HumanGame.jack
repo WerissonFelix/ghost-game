@@ -22,12 +22,22 @@ class HumanGame {
 
    /** Constructs a new Square Game. */
    constructor HumanGame new() {
-      // Creates a 30 by 30 pixels square and positions it at the top-left
-      // of the screen.
-      let human = Human.new(16, 16);
+      let human = Human.new(0, 0);
       let random = Random.new(19);
       let direction = 0;  // initial state is no movement
       return this;
+   }
+
+   method int getX() {
+      return human.getX();
+   }
+
+   method int getY() {
+      return human.getY();
+   }
+
+   method int getSize() {
+      return human.getSize();
    }
 
    /** Disposes this game. */
@@ -53,6 +63,3 @@ class HumanGame {
       return;
    }
 }
-
-
-

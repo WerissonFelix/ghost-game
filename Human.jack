@@ -26,45 +26,57 @@ class Human {
       return;
    }
 
+   method int getX() {
+      return x;
+   }
+
+   method int getY() {
+      return y;
+   }
+
+   method int getSize() {
+      return size;
+   }
+
    /** Draws the square on the screen. */
   method void draw() {
-      do drawHuman(y*32+(x/size));
+      do drawHuman(y * 32 + (x/size));
       return;
    }
 
    /** Erases the square from the screen. */
    method void erase() {
       do Screen.setColor(false);
-      do Screen.drawRectangle(x, y + 16, x + size, y + size + 16);
+      do Screen.drawRectangle(x, y, x + size, y + size);
       return;
    }
 
    method void drawHuman(int location) {
-        let memAddress = 16384+location+512;
+        let memAddress = 16384 + location;
         // column 0
         // column 0
         do Memory.poke(memAddress, 48);
-        do Memory.poke(memAddress +32, 120);
-        do Memory.poke(memAddress +64, 120);
-        do Memory.poke(memAddress +96, 120);
-        do Memory.poke(memAddress +128, 48);
-        do Memory.poke(memAddress +160, 252);
-        do Memory.poke(memAddress +192, 510);
-        do Memory.poke(memAddress +224, 891);
-        do Memory.poke(memAddress +256, 633);
-        do Memory.poke(memAddress +288, 633);
-        do Memory.poke(memAddress +320, 891);
-        do Memory.poke(memAddress +352, 633);
-        do Memory.poke(memAddress +384, 120);
-        do Memory.poke(memAddress +416, 72);
-        do Memory.poke(memAddress +448, 72);
-        do Memory.poke(memAddress +480, 72);
+        do Memory.poke(memAddress + 32, 120);
+        do Memory.poke(memAddress + 64, 120);
+        do Memory.poke(memAddress + 96, 120);
+        do Memory.poke(memAddress + 128, 48);
+        do Memory.poke(memAddress + 160, 252);
+        do Memory.poke(memAddress + 192, 510);
+        do Memory.poke(memAddress + 224, 891);
+        do Memory.poke(memAddress + 256, 633);
+        do Memory.poke(memAddress + 288, 633);
+        do Memory.poke(memAddress + 320, 891);
+        do Memory.poke(memAddress + 352, 633);
+        do Memory.poke(memAddress + 384, 120);
+        do Memory.poke(memAddress + 416, 72);
+        do Memory.poke(memAddress + 448, 72);
+        do Memory.poke(memAddress + 480, 72);
         return;
     }
 
    /** Moves the ghost up by 16 pixels. */
    method void moveUp() {
-      if (y > 15) {
+      if (y > 47) {
          do erase();
          let y = y - 16;
          do draw();
@@ -74,7 +86,7 @@ class Human {
 
    /** Moves the square down by 16 pixels. */
    method void moveDown() {
-      if ((y + size) < 239) {
+      if ((y + size) < 240) {
          do erase();
          let y = y + 16;
          do draw();
@@ -84,7 +96,7 @@ class Human {
 
    /** Moves the ghost left by 16 pixels. */
    method void moveLeft() {
-      if (x > 15) {
+      if (x > 31) {
          do erase();
          let x = x - 16;
          do draw();
@@ -94,7 +106,7 @@ class Human {
 
    /** Moves the square right by 16 pixels. */
    method void moveRight() {
-      if ((x + size) < 495) {
+      if ((x + size) < 496) {
          do erase();
          let x = x + 16;
          do draw();

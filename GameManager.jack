@@ -23,6 +23,25 @@ class GameManager{
         return;
     }
 
+    method boolean playersCollided() {
+        var int ghostX, ghostY, ghostSize;
+        var int humanX, humanY, humanSize;
+
+        let ghostX = ghost.getX();
+        let ghostY = ghost.getY();
+        let ghostSize = ghost.getSize();
+        let humanX = human.getX();
+        let humanY = human.getY();
+        let humanSize = human.getSize();
+
+        if ((ghostX + ghostSize) < humanX) { return false; }
+        if ((humanX + humanSize) < ghostX) { return false; }
+        if ((ghostY + ghostSize) < humanY) { return false; }
+        if ((humanY + humanSize) < ghostY) { return false; }
+
+        return true;
+    }
+
     method void run() {
         var char key;  // the key currently pressed by the user
         var boolean exit;
@@ -35,6 +54,7 @@ class GameManager{
 
             // Ghost Direction
             if (key = 81)  { let exit = true; }     // q key
+            if (key = 46) { do ghost.setDirection(0); }    // . - Idle
             if (key = 131) { do ghost.setDirection(1); }   // up arrow
             if (key = 133) { do ghost.setDirection(2); }   // down arrow
             if (key = 130) { do ghost.setDirection(3); }   // left arrow
@@ -42,6 +62,7 @@ class GameManager{
 
             // Human Direction    
             if (key = 81)  { let exit = true; }     // q key
+            if (key = 101) { do human.setDirection(0); }   // E - Idle
             if (key = 119) { do human.setDirection(1); }   // W - up
             if (key = 115) { do human.setDirection(2); }   // S - down
             if (key = 97)  { do human.setDirection(3); }   // A - left
@@ -49,6 +70,11 @@ class GameManager{
 
             do ghost.moveGhost();
             do human.moveHuman();
+
+            if (playersCollided()) {
+                let exit = true;
+            }
+
             do Sys.wait(50);
             
 

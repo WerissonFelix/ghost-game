@@ -22,12 +22,22 @@ class GhostGame {
 
    /** Constructs a new Square Game. */
    constructor GhostGame new() {
-      // Creates a 30 by 30 pixels square and positions it at the top-left
-      // of the screen.
-      let ghost = Ghost.new(0, 0);
+      let ghost = Ghost.new(496, 0);
       let random = Random.new(19);
       let direction = 0;  // initial state is no movement
       return this;
+   }
+
+   method int getX() {
+      return ghost.getX();
+   }
+
+   method int getY() {
+      return ghost.getY();
+   }
+
+   method int getSize() {
+      return ghost.getSize();
    }
 
    /** Disposes this game. */
@@ -53,6 +63,3 @@ class GhostGame {
       return;
    }
 }
-
-
-
