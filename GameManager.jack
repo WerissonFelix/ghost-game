@@ -1,23 +1,26 @@
 class GameManager{
-    
+
     field GhostGame ghost;
     field HumanGame human;
+    field Random random;
+    field GameMap map;
+    field int level;
     field int ghostDirection;
     field int humanDirection;
 
-
-    constructor GameManager new(){
-        let ghost = GhostGame.new();
-        let human = HumanGame.new();
+    constructor GameManager new() {
+        let random = Random.new(14);
+        let map = GameMap.new();
+        let level = 0;
         let ghostDirection = 0;
         let humanDirection = 0;
-
         return this;
     }
 
     method void dispose(){
         do ghost.dispose();
         do human.dispose();
+        do map.dispose();
         do Memory.deAlloc(this);
 
         return;
@@ -45,31 +48,36 @@ class GameManager{
     method void run() {
         var char key;  // the key currently pressed by the user
         var boolean exit;
+        do startRound();
         let exit = false;
         
         while (~exit) {
             // waits for a key to be pressed
-            
             let key = Keyboard.keyPressed();
 
             // Ghost Direction
-            if (key = 81)  { let exit = true; }     // q key
-            if (key = 46) { do ghost.setDirection(0); }    // . - Idle
+            if (key = 81)  { let exit = true; }            // q key
+            if (key = 46)  { do ghost.setDirection(0); }   // . - Idle
             if (key = 131) { do ghost.setDirection(1); }   // up arrow
             if (key = 133) { do ghost.setDirection(2); }   // down arrow
             if (key = 130) { do ghost.setDirection(3); }   // left arrow
             if (key = 132) { do ghost.setDirection(4); }   // right arrow
 
-            // Human Direction    
-            if (key = 81)  { let exit = true; }     // q key
+            // Human Direction
+            if (key = 81)  { let exit = true; }            // q key
             if (key = 101) { do human.setDirection(0); }   // E - Idle
             if (key = 119) { do human.setDirection(1); }   // W - up
             if (key = 115) { do human.setDirection(2); }   // S - down
             if (key = 97)  { do human.setDirection(3); }   // A - left
             if (key = 100) { do human.setDirection(4); }   // D - right
 
-            do ghost.moveGhost();
-            do human.moveHuman();
+            if (map.canMove(ghost.getX() / 16, ghost.getY() / 16, ghost.getDirection())) {
+                do ghost.moveGhost();
+            }
+            
+            if (map.canMove(human.getX() / 16, human.getY() / 16, human.getDirection())) {
+                do human.moveHuman();
+            }
 
             if (playersCollided()) {
                 let exit = true;
@@ -77,8 +85,42 @@ class GameManager{
 
             do Sys.wait(50);
             
-
-        } // while
+        }
         return;
-   }
+    }
+
+    method void startRound() {
+        // gc = ghost column, gr = ghost row, hc = human column, hr = human row
+        var int gc, gr, hc, hr;
+
+        do map.load(level);
+        do map.draw();
+        if (level = 2) {
+            let level = 0;
+        } else {
+            let level = level + 1;
+        }
+
+        // random position for the ghost, not a wall
+        let gc = random.randRange(31);
+        let gr = 1 + random.randRange(14);
+        while (map.isWall(gc, gr)) {
+            let gc = random.randRange(31);
+            let gr = 1 + random.randRange(14);
+        }
+
+        // random position for the human, not a wall and not the same as the ghost
+        let hc = random.randRange(31);
+        let hr = 1 + random.randRange(14);
+        while (map.isWall(hc, hr) | ((hc = gc) & (hr = gr))) {
+            let hc = random.randRange(31);
+            let hr = 1 + random.randRange(14);
+        }
+
+        let ghost = GhostGame.new();
+        do ghost.setPosition(gc * 16, gr * 16);
+        let human = HumanGame.new();
+        do human.setPosition(hc * 16, hr * 16);
+        return;
+    }
 }

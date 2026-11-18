@@ -28,18 +28,6 @@ class GhostGame {
       return this;
    }
 
-   method int getX() {
-      return ghost.getX();
-   }
-
-   method int getY() {
-      return ghost.getY();
-   }
-
-   method int getSize() {
-      return ghost.getSize();
-   }
-
    /** Disposes this game. */
    method void dispose() {
       do ghost.dispose();
@@ -56,10 +44,33 @@ class GhostGame {
       do Sys.wait(5);  // delays the next movement
       return;
    }
-   
+
+   method int getX() {
+      return ghost.getX();
+   }
+
+   method int getY() {
+      return ghost.getY();
+   }
+
+   method int getSize() {
+      return ghost.getSize();
+   }
+
+   method int getDirection() {
+      return direction;
+   }
+
+   method void setPosition(int newX, int newY) {
+      do ghost.setPosition(newX, newY);
+      return;
+   }
+
    method void setDirection(int new_direction){
       let direction = new_direction;
 
       return;
    }
+
+   
 }

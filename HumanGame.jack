@@ -28,18 +28,6 @@ class HumanGame {
       return this;
    }
 
-   method int getX() {
-      return human.getX();
-   }
-
-   method int getY() {
-      return human.getY();
-   }
-
-   method int getSize() {
-      return human.getSize();
-   }
-
    /** Disposes this game. */
    method void dispose() {
       do human.dispose();
@@ -54,6 +42,26 @@ class HumanGame {
       if (direction = 3) { do human.moveLeft(); }
       if (direction = 4) { do human.moveRight(); }
       do Sys.wait(5);  // delays the next movement
+      return;
+   }
+   method int getDirection() {
+      return direction;
+   }
+   
+   method int getX() {
+      return human.getX();
+   }
+
+   method int getY() {
+      return human.getY();
+   }
+
+   method int getSize() {
+      return human.getSize();
+   }
+
+   method void setPosition(int newX, int newY) {
+      do human.setPosition(newX, newY);
       return;
    }
 

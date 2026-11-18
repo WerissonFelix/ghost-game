@@ -38,6 +38,14 @@ class Human {
       return size;
    }
 
+   method void setPosition(int newX, int newY) {
+      do erase();
+      let x = newX;
+      let y = newY;
+      do draw();
+      return;
+   }
+
    /** Draws the square on the screen. */
   method void draw() {
       do drawHuman(y * 32 + (x/size));
@@ -47,7 +55,7 @@ class Human {
    /** Erases the square from the screen. */
    method void erase() {
       do Screen.setColor(false);
-      do Screen.drawRectangle(x, y, x + size, y + size);
+      do Screen.drawRectangle(x, y, x + size - 1, y + size - 1);
       return;
    }
 
@@ -55,22 +63,22 @@ class Human {
         let memAddress = 16384 + location;
         // column 0
         // column 0
-        do Memory.poke(memAddress, 48);
-        do Memory.poke(memAddress + 32, 120);
-        do Memory.poke(memAddress + 64, 120);
-        do Memory.poke(memAddress + 96, 120);
-        do Memory.poke(memAddress + 128, 48);
-        do Memory.poke(memAddress + 160, 252);
-        do Memory.poke(memAddress + 192, 510);
-        do Memory.poke(memAddress + 224, 891);
-        do Memory.poke(memAddress + 256, 633);
-        do Memory.poke(memAddress + 288, 633);
-        do Memory.poke(memAddress + 320, 891);
-        do Memory.poke(memAddress + 352, 633);
-        do Memory.poke(memAddress + 384, 120);
-        do Memory.poke(memAddress + 416, 72);
-        do Memory.poke(memAddress + 448, 72);
-        do Memory.poke(memAddress + 480, 72);
+        do Memory.poke(memAddress, 384);
+        do Memory.poke(memAddress + 32, 960);
+        do Memory.poke(memAddress + 64, 960);
+        do Memory.poke(memAddress + 96, 960);
+        do Memory.poke(memAddress + 128, 384);
+        do Memory.poke(memAddress + 160, 2016);
+        do Memory.poke(memAddress + 192, 4080);
+        do Memory.poke(memAddress + 224, 7128);
+        do Memory.poke(memAddress + 256, 5064);
+        do Memory.poke(memAddress + 288, 5064);
+        do Memory.poke(memAddress + 320, 7128);
+        do Memory.poke(memAddress + 352, 5064);
+        do Memory.poke(memAddress + 384, 960);
+        do Memory.poke(memAddress + 416, 576);
+        do Memory.poke(memAddress + 448, 576);
+        do Memory.poke(memAddress + 480, 576);
         return;
     }
 
