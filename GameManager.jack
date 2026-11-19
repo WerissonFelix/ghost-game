@@ -165,25 +165,45 @@ class GameManager{
         do Output.moveCursor(0, 56);
         do Output.printString("GHOST: ");
         do ghostTimer.printTime(0, 63);
+        do printPoints();
         
         return true;
     }
 
     method boolean finalMensage(){
         var char key;
+        do Output.moveCursor(9, 12);
+        do Output.printString("Human Points: ");
+        do Output.printInt(humanPoints);
+
+        do Output.moveCursor(9, 36);
+        do Output.printString("Ghost Points: ");
+        do Output.printInt(ghostPoints);
         
-        do Output.moveCursor(12, 12);
+        do Output.moveCursor(12, 9);
         do Output.printString("Press ENTER to continue or press ESC to exit...");
         let key = 0;
         while (~(key = 128) & ~(key = 140)) {
             let key = Keyboard.keyPressed();
         }
-        while (~(Keyboard.keyPressed() = 0)) {}
+       
 
         if (key = 128) {
             return true;
         }
         return false;
+    }
+
+    method void printPoints(){
+        do Output.moveCursor(0, 18);
+        do Output.printString("HUMAN ");
+        do Output.printInt(humanPoints);
+
+        do Output.moveCursor(0, 38);
+        do Output.printString("GHOST ");
+        do Output.printInt(ghostPoints);
+
+        return;
     }
 
     method void run() {
@@ -201,21 +221,21 @@ class GameManager{
 
             // Ghost Direction
             if (ghostMove){
-                if (key = 81)  { let exit = true; }            // q key
-                if (key = 46)  { do ghost.setDirection(0); }   // . - Idle
-                if (key = 131) { do ghost.setDirection(1); }   // up arrow
-                if (key = 133) { do ghost.setDirection(2); }   // down arrow
-                if (key = 130) { do ghost.setDirection(3); }   // left arrow
-                if (key = 132) { do ghost.setDirection(4); }   // right arrow
+                if (key = 140)  { let exit = true; }            // ESC key
+                if (key = 46)   { do ghost.setDirection(0); }   // . - Idle
+                if (key = 131)  { do ghost.setDirection(1); }   // up arrow
+                if (key = 133)  { do ghost.setDirection(2); }   // down arrow
+                if (key = 130)  { do ghost.setDirection(3); }   // left arrow
+                if (key = 132)  { do ghost.setDirection(4); }   // right arrow
             }
             
             // Human Direction
-            if (key = 81)  { let exit = true; }            // q key
-            if (key = 101) { do human.setDirection(0); }   // E - Idle
-            if (key = 119) { do human.setDirection(1); }   // W - up
-            if (key = 115) { do human.setDirection(2); }   // S - down
-            if (key = 97)  { do human.setDirection(3); }   // A - left
-            if (key = 100) { do human.setDirection(4); }   // D - right
+            if (key = 140)  { let exit = true; }            // ESC key
+            if (key = 101)  { do human.setDirection(0); }   // E - Idle
+            if (key = 119)  { do human.setDirection(1); }   // W - up
+            if (key = 115)  { do human.setDirection(2); }   // S - down
+            if (key = 97)   { do human.setDirection(3); }   // A - left
+            if (key = 100)  { do human.setDirection(4); }   // D - right
 
             if (map.canMove(ghost.getX() / 16, ghost.getY() / 16, ghost.getDirection())) {
                 do ghost.moveGhost();
@@ -241,6 +261,7 @@ class GameManager{
                     do Output.moveCursor(0, 56);
                     do Output.printString("GHOST: ");
                     do ghostTimer.printTime(0, 63);
+                    do printPoints();
                 } else {
                     do disposeRound();
                     let exit = true;
@@ -279,6 +300,7 @@ class GameManager{
                             do Output.moveCursor(0, 56);
                             do Output.printString("GHOST: ");
                             do ghostTimer.printTime(0, 63);
+                            do printPoints();
                         } else {
                             do disposeRound();
                             let exit = true;
