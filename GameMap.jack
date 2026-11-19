@@ -81,6 +81,12 @@ class GameMap {
       return level;
    }
 
+   method void setLevel(int newLevel){
+      let level = newLevel;
+
+      return;
+   }
+
    /** Carrega o mapa de numero n (0, 1 ou 2). */
    method void load(int n) {
       let level = n;

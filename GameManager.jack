@@ -28,13 +28,34 @@ class GameManager{
     method void dispose(){
         if (~(ghost = 0)) {
             do ghost.dispose();
+            let ghost = 0;
         }
         if (~(human = 0)) {
             do human.dispose();
+            let human = 0;
         }
         do map.dispose();
+        let map = 0;
+        do random.dispose();
+        let random = 0;
+        do humanTimer.dispose();
+        let humanTimer = 0;
+        do ghostTimer.dispose();
+        let ghostTimer = 0;
         do Memory.deAlloc(this);
 
+        return;
+    }
+
+    method void disposeRound() {
+        if (~(ghost = 0)) {
+            do ghost.dispose();
+            let ghost = 0;
+        }
+        if (~(human = 0)) {
+            do human.dispose();
+            let human = 0;
+        }
         return;
     }
 
@@ -71,6 +92,7 @@ class GameManager{
         do map.load(level);
         do map.draw();
         if (level = 2) {
+            do map.setLevel(0);
             let level = 0;
         } else {
             let level = level + 1;
@@ -97,10 +119,15 @@ class GameManager{
         //do ghost.setPosition();
         let human = HumanGame.new(humanColumn * 16, humanRow * 16);
         //do human.setPosition();
+
+        let ghostMove = false;
+        do humanTimer.setTime(3);
+        do ghostTimer.setTime(7);
+                
         return;
     }
 
-    method void prepareToRun(){
+    method boolean prepareToRun(){
         var char key;  // the key currently pressed by the user
         var int count;
 
@@ -125,12 +152,11 @@ class GameManager{
         do random.setSeed(count);
         while (~(Keyboard.keyPressed() = 0)) {}  // espera soltar a tecla
         if (key = 140) {
-            return;
+            return false;
         }
 
         do Screen.clearScreen();
         do startRound();
-        
         
         do Output.moveCursor(0, 0);
         do Output.printString("HUMAN: ");
@@ -140,29 +166,33 @@ class GameManager{
         do Output.printString("GHOST: ");
         do ghostTimer.printTime(0, 63);
         
-        return;
+        return true;
     }
 
-    method void finalMensage(){
+    method boolean finalMensage(){
         var char key;
         
         do Output.moveCursor(12, 12);
         do Output.printString("Press ENTER to continue or press ESC to exit...");
-        while (true) {
+        let key = 0;
+        while (~(key = 128) & ~(key = 140)) {
             let key = Keyboard.keyPressed();
-
-            if (key = 128)  { do run(); }
-            if (key = 140)  { do Sys.halt(); }
-
         }
-        return;
+        while (~(Keyboard.keyPressed() = 0)) {}
+
+        if (key = 128) {
+            return true;
+        }
+        return false;
     }
 
     method void run() {
         var char key;  // the key currently pressed by the user
         var boolean exit;
 
-        do prepareToRun();
+        if (~prepareToRun()) {
+            return;
+        }
         let exit = false;
 
         while (~exit) {
@@ -200,9 +230,21 @@ class GameManager{
                 do Screen.clearScreen();
                 do Output.moveCursor(11, 21);
                 do Output.printString("GAME OVER, GHOST WINS");
-                do finalMensage();
-
-                let exit = true;  
+                if (finalMensage()) {
+                    do disposeRound();
+                    do startRound();
+                    let cycleCounter = 0;
+                    let ghostMove = false;
+                    do Output.moveCursor(0, 0);
+                    do Output.printString("HUMAN: ");
+                    do humanTimer.printTime(0, 7);
+                    do Output.moveCursor(0, 56);
+                    do Output.printString("GHOST: ");
+                    do ghostTimer.printTime(0, 63);
+                } else {
+                    do disposeRound();
+                    let exit = true;
+                }
             }
 
             let cycleCounter = cycleCounter + 1;
@@ -226,9 +268,21 @@ class GameManager{
                         do Screen.clearScreen();
                         do Output.moveCursor(11, 21);
                         do Output.printString("GAME OVER, HUMAN WINS");
-                        do finalMensage();
-
-                        let exit = true;
+                        if (finalMensage()) {
+                            do disposeRound();
+                            do startRound();
+                            let cycleCounter = 0;
+                            let ghostMove = false;
+                            do Output.moveCursor(0, 0);
+                            do Output.printString("HUMAN: ");
+                            do humanTimer.printTime(0, 7);
+                            do Output.moveCursor(0, 56);
+                            do Output.printString("GHOST: ");
+                            do ghostTimer.printTime(0, 63);
+                        } else {
+                            do disposeRound();
+                            let exit = true;
+                        }
                     }
                 }
                 

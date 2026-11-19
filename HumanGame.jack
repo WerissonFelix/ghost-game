@@ -31,6 +31,7 @@ class HumanGame {
    /** Disposes this game. */
    method void dispose() {
       do human.dispose();
+      do random.dispose();
       do Memory.deAlloc(this);
       return;
    }

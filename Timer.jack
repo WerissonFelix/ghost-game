@@ -8,6 +8,11 @@ class Timer{
         return this;
     }
 
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
     method void printTime(int row, int column){
         do Output.moveCursor(row, column);
         do Output.printInt(segundos);
@@ -31,8 +36,8 @@ class Timer{
         return segundos = 0;
     }
 
-    method void setSegundos(int qtd_segundos){
-        let segundos = qtd_segundos;
+    method void setTime(int newTime){
+        let segundos = newTime;
 
         return;
     }
