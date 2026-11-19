@@ -1,22 +1,21 @@
 class GameManager{
 
     field int level;
-    field int ghostDirection;
-    field int humanDirection;
     field int cycleCounter;
+    field boolean ghostMove;
+    field int ghostPoints, humanPoints;
     field GhostGame ghost;
     field HumanGame human;
     field Random random;
     field GameMap map;
     field Timer humanTimer, ghostTimer;
-    
-    
 
     constructor GameManager new() {
         let level = 0;
-        let ghostDirection = 0;
-        let humanDirection = 0;
         let cycleCounter = 0;
+        let ghostPoints = 0;
+        let humanPoints = 0;
+        let ghostMove = false;
 
         let random = Random.new(20);
         let map = GameMap.new();
@@ -66,110 +65,6 @@ class GameManager{
         return true;
     }
 
-    method void run() {
-        var char key;  // the key currently pressed by the user
-        var boolean exit;
-        var int count;
-
-        do Screen.clearScreen();
-        do Output.moveCursor(5, 23);
-        do Output.printString("GHOST MULTIPLAYER");
-        do Output.moveCursor(8, 10);
-        do Output.printString("Jogador 1 (Fantasma): setas = direcao, . = parar");
-        do Output.moveCursor(10, 10);
-        do Output.printString("Jogador 2 (Pessoa): W A S D = direcao, E = parar");
-        do Output.moveCursor(12, 10);
-        do Output.printString("ESC = sair");
-        do Output.moveCursor(15, 17);
-        do Output.printString("Pressione ENTER para comecar");
-
-        let key = 0;
-        let count = 0;
-        while (~(key = 128) & ~(key = 140)) {   // 128 = ENTER, 140 = ESC
-            let key = Keyboard.keyPressed();
-            let count = count + 1;
-        }
-        do random.setSeed(count);
-        while (~(Keyboard.keyPressed() = 0)) {}  // espera soltar a tecla
-        if (key = 140) {
-            return;
-        }
-
-        do Screen.clearScreen();
-        do startRound();
-        let exit = false;
-        
-
-        do Output.moveCursor(0, 0);
-        do Output.printString("HUMAN: ");
-        do humanTimer.printTime(0, 7);
-
-        do Output.moveCursor(0, 56);
-        do Output.printString("GHOST: ");
-        do ghostTimer.printTime(0, 63);
-        
-        while (~exit) {
-            // waits for a key to be pressed
-            let key = Keyboard.keyPressed();
-
-            // Ghost Direction
-            if (key = 81)  { let exit = true; }            // q key
-            if (key = 46)  { do ghost.setDirection(0); }   // . - Idle
-            if (key = 131) { do ghost.setDirection(1); }   // up arrow
-            if (key = 133) { do ghost.setDirection(2); }   // down arrow
-            if (key = 130) { do ghost.setDirection(3); }   // left arrow
-            if (key = 132) { do ghost.setDirection(4); }   // right arrow
-
-            // Human Direction
-            if (key = 81)  { let exit = true; }            // q key
-            if (key = 101) { do human.setDirection(0); }   // E - Idle
-            if (key = 119) { do human.setDirection(1); }   // W - up
-            if (key = 115) { do human.setDirection(2); }   // S - down
-            if (key = 97)  { do human.setDirection(3); }   // A - left
-            if (key = 100) { do human.setDirection(4); }   // D - right
-
-            if (map.canMove(ghost.getX() / 16, ghost.getY() / 16, ghost.getDirection())) {
-                do ghost.moveGhost();
-            }
-            
-            if (map.canMove(human.getX() / 16, human.getY() / 16, human.getDirection())) {
-                do human.moveHuman();
-            }
-
-            if (playersCollided()) {
-                let exit = true;
-            }
-
-            let cycleCounter = cycleCounter + 1;
-
-
-            if (cycleCounter > 19){
-                if (~(humanTimer.isFinished())) {
-                    do humanTimer.decrement();
-                    do humanTimer.printTime(0, 7);
-
-                }
-                else{
-                    if (~(ghostTimer.isFinished())){
-                        do ghostTimer.decrement();
-                        do ghostTimer.printTime(0, 32);
-
-                    }
-
-                    if (ghostTimer.isFinished()){
-                        let exit = true;
-                    }
-                }
-                
-                let cycleCounter = 0;
-            }
-
-            do Sys.wait(50);
-            
-        }
-        return;
-    }
-
     method void startRound() {
         var int ghostColumn, ghostRow, humanColumn, humanRow;
 
@@ -204,4 +99,145 @@ class GameManager{
         //do human.setPosition();
         return;
     }
+
+    method void prepareToRun(){
+        var char key;  // the key currently pressed by the user
+        var int count;
+
+        do Screen.clearScreen();
+        do Output.moveCursor(5, 23);
+        do Output.printString("GHOST MULTIPLAYER");
+        do Output.moveCursor(8, 10);
+        do Output.printString("Jogador 1 (Fantasma): setas = direcao, . = parar");
+        do Output.moveCursor(10, 10);
+        do Output.printString("Jogador 2 (Pessoa): W A S D = direcao, E = parar");
+        do Output.moveCursor(12, 10);
+        do Output.printString("ESC = sair");
+        do Output.moveCursor(15, 17);
+        do Output.printString("Pressione ENTER para comecar");
+
+        let key = 0;
+        let count = 0;
+        while (~(key = 128) & ~(key = 140)) {   // 128 = ENTER, 140 = ESC
+            let key = Keyboard.keyPressed();
+            let count = count + 1;
+        }
+        do random.setSeed(count);
+        while (~(Keyboard.keyPressed() = 0)) {}  // espera soltar a tecla
+        if (key = 140) {
+            return;
+        }
+
+        do Screen.clearScreen();
+        do startRound();
+        
+        
+        do Output.moveCursor(0, 0);
+        do Output.printString("HUMAN: ");
+        do humanTimer.printTime(0, 7);
+
+        do Output.moveCursor(0, 56);
+        do Output.printString("GHOST: ");
+        do ghostTimer.printTime(0, 63);
+        
+        return;
+    }
+
+    method void finalMensage(){
+        var char key;
+        
+        do Output.moveCursor(12, 12);
+        do Output.printString("Press ENTER to continue or press ESC to exit...");
+        while (true) {
+            let key = Keyboard.keyPressed();
+
+            if (key = 128)  { do run(); }
+            if (key = 140)  { do Sys.halt(); }
+
+        }
+        return;
+    }
+
+    method void run() {
+        var char key;  // the key currently pressed by the user
+        var boolean exit;
+
+        do prepareToRun();
+        let exit = false;
+
+        while (~exit) {
+            // waits for a key to be pressed
+            let key = Keyboard.keyPressed();
+
+            // Ghost Direction
+            if (ghostMove){
+                if (key = 81)  { let exit = true; }            // q key
+                if (key = 46)  { do ghost.setDirection(0); }   // . - Idle
+                if (key = 131) { do ghost.setDirection(1); }   // up arrow
+                if (key = 133) { do ghost.setDirection(2); }   // down arrow
+                if (key = 130) { do ghost.setDirection(3); }   // left arrow
+                if (key = 132) { do ghost.setDirection(4); }   // right arrow
+            }
+            
+            // Human Direction
+            if (key = 81)  { let exit = true; }            // q key
+            if (key = 101) { do human.setDirection(0); }   // E - Idle
+            if (key = 119) { do human.setDirection(1); }   // W - up
+            if (key = 115) { do human.setDirection(2); }   // S - down
+            if (key = 97)  { do human.setDirection(3); }   // A - left
+            if (key = 100) { do human.setDirection(4); }   // D - right
+
+            if (map.canMove(ghost.getX() / 16, ghost.getY() / 16, ghost.getDirection())) {
+                do ghost.moveGhost();
+            }
+            
+            if (map.canMove(human.getX() / 16, human.getY() / 16, human.getDirection())) {
+                do human.moveHuman();
+            }
+
+            if (playersCollided()) {
+                let ghostPoints = ghostPoints + 1;
+                do Screen.clearScreen();
+                do Output.moveCursor(11, 21);
+                do Output.printString("GAME OVER, GHOST WINS");
+                do finalMensage();
+
+                let exit = true;  
+            }
+
+            let cycleCounter = cycleCounter + 1;
+
+            if (cycleCounter > 19){
+                if (~(humanTimer.isFinished())) {
+                    do humanTimer.decrement();
+                    do humanTimer.printTime(0, 7);
+
+                }
+                else{
+                    let ghostMove = true;
+
+                    if (~(ghostTimer.isFinished())){
+                        do ghostTimer.decrement();
+                        do ghostTimer.printTime(0, 63);
+                    }
+
+                    if (ghostTimer.isFinished()){
+                        let humanPoints = humanPoints + 1;
+                        do Screen.clearScreen();
+                        do Output.moveCursor(11, 21);
+                        do Output.printString("GAME OVER, HUMAN WINS");
+                        do finalMensage();
+
+                        let exit = true;
+                    }
+                }
+                
+                let cycleCounter = 0;
+            }
+
+            do Sys.wait(50);
+
+        }
+        return;
+    }  
 }
