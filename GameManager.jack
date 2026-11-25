@@ -1,8 +1,8 @@
+/** Gerencia o jogo, lógica de pontuação, mapa, colisões, etc. */
 class GameManager{
-
     field int level;
     field int cycleCounter;
-    field boolean ghostMove;
+    field boolean canGhostMove;
     field int ghostPoints, humanPoints;
     field GhostGame ghost;
     field HumanGame human;
@@ -10,12 +10,13 @@ class GameManager{
     field GameMap map;
     field Timer humanTimer, ghostTimer;
 
+    /** Cria o gerenciador do jogo e inicializa o estado */
     constructor GameManager new() {
         let level = 0;
         let cycleCounter = 0;
         let ghostPoints = 0;
         let humanPoints = 0;
-        let ghostMove = false;
+        let canGhostMove = false;
 
         let random = Random.new(20);
         let map = GameMap.new();
@@ -25,6 +26,7 @@ class GameManager{
         return this;
     }
 
+    /** Descarta o gerenciador do jogo e libera a memória */
     method void dispose(){
         if (~(ghost = 0)) {
             do ghost.dispose();
@@ -47,6 +49,7 @@ class GameManager{
         return;
     }
 
+    /** Descarta o humano e o fantasma da rodada atual */
     method void disposeRound() {
         if (~(ghost = 0)) {
             do ghost.dispose();
@@ -59,6 +62,7 @@ class GameManager{
         return;
     }
 
+    /** Verifica se o fantasma e o humano colidiram */
     method boolean playersCollided() {
         var int ghostX, ghostY, ghostSize;
         var int humanX, humanY, humanSize;
@@ -71,11 +75,13 @@ class GameManager{
         let humanY = human.getY();
         let humanSize = human.getSize();
 
+        // Verifica se existe separação entre as hitboxes
         if ((ghostX + ghostSize) < humanX) { return false; }
         if ((humanX + humanSize) < ghostX) { return false; }
         if ((ghostY + ghostSize) < humanY) { return false; }
         if ((humanY + humanSize) < ghostY) { return false; }
-
+     
+        // Identifica se as hitboxes apenas se tocam pelas bordas.    
         let xTouch = ((ghostX + ghostSize) = humanX) | ((humanX + humanSize) = ghostX);
         let yTouch = ((ghostY + ghostSize) = humanY) | ((humanY + humanSize) = ghostY);
         if (xTouch & yTouch) { 
@@ -86,6 +92,7 @@ class GameManager{
         return true;
     }
 
+    /** Inicia uma nova rodada do jogo, criando um novo fantasma e humano em posições aleatórias no mapa */
     method void startRound() {
         var int ghostColumn, ghostRow, humanColumn, humanRow;
 
@@ -98,7 +105,7 @@ class GameManager{
             let level = level + 1;
         }
 
-        // random position for the ghost, not a wall
+        // Gera uma posição aleatória para o Ghost, evita que seja um obstáculo
         let ghostColumn = random.randRange(31);
         let ghostRow = 1 + random.randRange(14);
         while (map.isWall(ghostColumn, ghostRow)) {
@@ -106,7 +113,9 @@ class GameManager{
             let ghostRow = 1 + random.randRange(14);
         }
 
-        // random position for the human, not a wall and not the same as the ghost
+        /*
+        Gera uma posição aleatória para o Human, evita que seja um obstáculo
+        e que seja a mesma posição do Ghost*/
         let humanColumn = random.randRange(31);
         let humanRow = 1 + random.randRange(14);
         while (map.isWall(humanColumn, humanRow) | ((humanColumn = ghostColumn) & (humanRow = ghostRow))) {
@@ -114,21 +123,23 @@ class GameManager{
             let humanRow = 1 + random.randRange(14);
         }
 
-        let ghost = GhostGame.new(ghostColumn * 16, ghostRow * 16);
-
-        //do ghost.setPosition();
+        let ghost = GhostGame.new(ghostColumn * 16, ghostRow * 16);   
         let human = HumanGame.new(humanColumn * 16, humanRow * 16);
-        //do human.setPosition();
 
-        let ghostMove = false;
+        let canGhostMove = false;
         do humanTimer.setTime(3);
         do ghostTimer.setTime(7);
                 
         return;
     }
 
+    /**
+    Prepara o jogo para ser executado, exibindo instruções e esperando o usuário pressionar uma tecla.
+
+    Utiliza o tempo de espera de apertar a tecla como semente para o gerador de números aleatórios. 
+    */
     method boolean prepareToRun(){
-        var char key;  // the key currently pressed by the user
+        var char key;  // A tecla que está sendo pressionada pelo user
         var int count;
 
         do Screen.clearScreen();
@@ -158,6 +169,7 @@ class GameManager{
         do Screen.clearScreen();
         do startRound();
         
+        // Printa os Timers do Human e do Ghost
         do Output.moveCursor(0, 0);
         do Output.printString("HUMAN: ");
         do humanTimer.printTime(0, 7);
@@ -170,6 +182,9 @@ class GameManager{
         return true;
     }
 
+    /**
+    Exibe a mensagem final do jogo, mostrando os pontos de cada jogador e 
+    aguardando o usuário pressionar ENTER para continuar ou ESC para sair. */
     method boolean finalMensage(){
         var char key;
         do Output.moveCursor(9, 12);
@@ -194,6 +209,7 @@ class GameManager{
         return false;
     }
 
+    /** Imprime os pontos atuais de cada jogador na tela. */
     method void printPoints(){
         do Output.moveCursor(0, 18);
         do Output.printString("HUMAN ");
@@ -206,8 +222,11 @@ class GameManager{
         return;
     }
 
+    /**
+    Executa o loop principal do jogo, processando entradas do usuário,
+    movimentando os jogadores e verificando colisões. */
     method void run() {
-        var char key;  // the key currently pressed by the user
+        var char key;  // A tecla que está sendo pressionada pelo user
         var boolean exit;
 
         if (~prepareToRun()) {
@@ -216,11 +235,10 @@ class GameManager{
         let exit = false;
 
         while (~exit) {
-            // waits for a key to be pressed
             let key = Keyboard.keyPressed();
 
-            // Ghost Direction
-            if (ghostMove){
+            // Controles do Ghost
+            if (canGhostMove){
                 if (key = 140)  { let exit = true; }            // ESC key
                 if (key = 46)   { do ghost.setDirection(0); }   // . - Idle
                 if (key = 131)  { do ghost.setDirection(1); }   // up arrow
@@ -229,7 +247,7 @@ class GameManager{
                 if (key = 132)  { do ghost.setDirection(4); }   // right arrow
             }
             
-            // Human Direction
+            // Controles do Human
             if (key = 140)  { let exit = true; }            // ESC key
             if (key = 101)  { do human.setDirection(0); }   // E - Idle
             if (key = 119)  { do human.setDirection(1); }   // W - up
@@ -245,6 +263,7 @@ class GameManager{
                 do human.moveHuman();
             }
 
+            /** Verifica se o fantasma e o humano colidiram, atualiza os pontos e exibe a mensagem de fim de jogo se necessário. */
             if (playersCollided()) {
                 let ghostPoints = ghostPoints + 1;
                 do Screen.clearScreen();
@@ -254,7 +273,7 @@ class GameManager{
                     do disposeRound();
                     do startRound();
                     let cycleCounter = 0;
-                    let ghostMove = false;
+                    let canGhostMove = false;
                     do Output.moveCursor(0, 0);
                     do Output.printString("HUMAN: ");
                     do humanTimer.printTime(0, 7);
@@ -270,30 +289,41 @@ class GameManager{
 
             let cycleCounter = cycleCounter + 1;
 
-            if (cycleCounter > 19){
+            if (cycleCounter > 19){ // 20 ciclos de 50 ms correspondem a aproximadamente 1 segundo
                 if (~(humanTimer.isFinished())) {
+                    /* 
+                    Decrementa 1 segundo enquanto o humanTimer não chegar a zero.
+                    o Ghost não pode se mover enquanto o humanTimer for maior que 
+                    zero.
+                    */
                     do humanTimer.decrement();
-                    do humanTimer.printTime(0, 7);
+                    do humanTimer.printTime(0, 7); 
 
                 }
                 else{
-                    let ghostMove = true;
+                    let canGhostMove = true;
 
                     if (~(ghostTimer.isFinished())){
+                        // Decrementa 1 segundo enquanto o ghostTimer não chegar a zero
                         do ghostTimer.decrement();
                         do ghostTimer.printTime(0, 63);
                     }
 
                     if (ghostTimer.isFinished()){
+                        /* 
+                        Se o ghostTimer chegar a zero, significa que o tempo de 'caça' acabou
+                        e o human não foi pego, logo, vitória para o human
+                        */
                         let humanPoints = humanPoints + 1;
                         do Screen.clearScreen();
                         do Output.moveCursor(11, 21);
                         do Output.printString("GAME OVER, HUMAN WINS");
                         if (finalMensage()) {
+                            // Termina o round e prepara para o próximo
                             do disposeRound();
                             do startRound();
                             let cycleCounter = 0;
-                            let ghostMove = false;
+                            let canGhostMove = false;
                             do Output.moveCursor(0, 0);
                             do Output.printString("HUMAN: ");
                             do humanTimer.printTime(0, 7);

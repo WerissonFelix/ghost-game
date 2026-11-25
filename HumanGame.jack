@@ -1,26 +1,10 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/09/Square/SquareGame.jack
-
-/**
- * Implements the Square Dance game.
- * This simple game allows the user to move a black square around
- * the screen, and change the square's size during the movement.
- * When the game starts, a square of 30 by 30 pixels is shown at the
- * top-left corner of the screen. The user controls the square as follows.
- * The 4 arrow keys are used to move the square up, down, left, and right.
- * The 'z' and 'x' keys are used, respectively, to decrement and increment
- * the square's size. The 'q' key is used to quit the game.
- */
-
 class HumanGame {
    field int direction; // the square's current direction: 
                         // 0=none, 1=up, 2=down, 3=left, 4=right
    field Random random;
    field Human human;
 
-   /** Constructs a new Square Game. */
+   /** Cria um humano e inicializa o estado. */
    constructor HumanGame new(int Ax, int Ay) {
       let human = Human.new(Ax, Ay);
       let random = Random.new(19);
@@ -28,7 +12,7 @@ class HumanGame {
       return this;
    }
 
-   /** Disposes this game. */
+   /** Descarta o humano e libera a memória. */
    method void dispose() {
       do human.dispose();
       do random.dispose();
@@ -36,7 +20,7 @@ class HumanGame {
       return;
    }
 
-   /** Moves the square in the current direction. */
+   /** Move o humano para uma determinada direção. */
    method void moveHuman() {
       if (direction = 1) { do human.moveUp(); }
       if (direction = 2) { do human.moveDown(); }
@@ -61,11 +45,13 @@ class HumanGame {
       return human.getSize();
    }
 
+   /** Atualiza a posição X e Ydo humano. */
    method void setPosition(int newX, int newY) {
       do human.setPosition(newX, newY);
       return;
    }
 
+   /** Move o humano para uma determinada direção. */
    method void setDirection(int new_direction){
       let direction = new_direction;
 

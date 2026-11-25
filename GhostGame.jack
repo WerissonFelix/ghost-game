@@ -20,7 +20,7 @@ class GhostGame {
    field Random random;
    field Ghost ghost;
 
-   /** Constructs a new Square Game. */
+   /** Cria um fantasma e inicializa o estado. */
    constructor GhostGame new(int Ax, int Ay) {
       let ghost = Ghost.new(Ax, Ay);
       let random = Random.new(2);
@@ -28,7 +28,7 @@ class GhostGame {
       return this;
    }
 
-   /** Disposes this game. */
+   /** Descarta o ghost e libera a memória. */
    method void dispose() {
       do ghost.dispose();
       do random.dispose();
@@ -36,7 +36,7 @@ class GhostGame {
       return;
    }
 
-   /** Moves the square in the current direction. */
+   /** Move o Ghost para uma determinada direção. */
    method void moveGhost() {
       if (direction = 1) { do ghost.moveUp(); }
       if (direction = 2) { do ghost.moveDown(); }
@@ -61,12 +61,14 @@ class GhostGame {
    method int getDirection() {
       return direction;
    }
-
+   
+   /* Atualiza as posições X e Y */
    method void setPosition(int newX, int newY) {
       do ghost.setPosition(newX, newY);
       return;
    }
 
+   /* Atualiza a direção para onde o ghost se desloca */
    method void setDirection(int new_direction){
       let direction = new_direction;
 

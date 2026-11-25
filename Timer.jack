@@ -1,18 +1,22 @@
+/* Representa o Temporizador do jogo  */
 class Timer{
 
     field int segundos; 
 
+    /* Cria um novo Timer com base na qtd de segundos*/
     constructor Timer new(int qtd_segundos){
         let segundos = qtd_segundos;
 
         return this;
     }
 
+    /* Faz o dispose do Timer na memória */
     method void dispose(){
         do Memory.deAlloc(this);
         return;
     }
 
+    /* Printa o Timer na tela com base nas cordenadas recebidas*/
     method void printTime(int row, int column){
         do Output.moveCursor(row, column);
         do Output.printInt(segundos);
@@ -20,8 +24,9 @@ class Timer{
         return;
     }
 
+    /* Decrementa os segundos em 1*/
     method int decrement(){
-        if (segundos > 0){
+        if (segundos > 0){ // Evita que o timer fique com segundos negativos 
             let segundos = segundos - 1;
 
             return segundos;
@@ -32,10 +37,12 @@ class Timer{
        
     }
 
+    /* Retorna true se o contador chegou a 0*/
     method boolean isFinished(){
         return segundos = 0;
     }
 
+    /* Atualiza a qtd de segundos  */
     method void setTime(int newTime){
         let segundos = newTime;
 

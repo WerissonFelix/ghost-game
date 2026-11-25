@@ -3,14 +3,15 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/09/Square/Square.jack
 
-/** Implements a graphical square. */
+
 class Human {
+   /**  Implementa o Human */
 
    field int x, y; // screen location of the square's top-left corner
    field int size; // length of this square, in pixels
    field int memAddress;
 
-   /** Constructs a new square with a given location and size. */
+   /** Cria um novo Human com base nas posições X e Y */
    constructor Human new(int Ax, int Ay) {
       let x = Ax;
       let y = Ay;
@@ -38,6 +39,10 @@ class Human {
       return size;
    }
 
+   /** 
+   Apaga o Human da tela para atualizar seu X e Y 
+   e desenhar novamente em sua nova posição
+   . */
    method void setPosition(int newX, int newY) {
       do erase();
       let x = newX;
@@ -46,19 +51,20 @@ class Human {
       return;
    }
 
-   /** Draws the square on the screen. */
+   /** Desenha o Human na tela */
   method void draw() {
       do drawHuman(y * 32 + (x/size));
       return;
    }
 
-   /** Erases the square from the screen. */
+   /** Apaga o Human da tela. */
    method void erase() {
       do Screen.setColor(false);
       do Screen.drawRectangle(x, y, x + size - 1, y + size - 1);
       return;
    }
 
+   /** Desenha o Human na tela */
    method void drawHuman(int location) {
         let memAddress = 16384 + location;
         // column 0
@@ -92,7 +98,7 @@ class Human {
       return;
    }
 
-   /** Moves the square down by 16 pixels. */
+   /** Movimenta o Human para baixo por 16 pixels. */
    method void moveDown() {
       if ((y + size) < 240) {
          do erase();
@@ -102,7 +108,7 @@ class Human {
       return;
    }
 
-   /** Moves the ghost left by 16 pixels. */
+   /** Movimenta o Human para a esquerda por 16 pixels. */
    method void moveLeft() {
       if (x > 31) {
          do erase();
@@ -112,7 +118,7 @@ class Human {
       return;
    }
 
-   /** Moves the square right by 16 pixels. */
+   /** Movimenta o Human para a direita por 16 pixels. */
    method void moveRight() {
       if ((x + size) < 496) {
          do erase();

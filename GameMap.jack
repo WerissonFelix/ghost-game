@@ -1,9 +1,5 @@
-// GameMap.jack
-// Classe NOVA (nao existia no codigo original).
-// Guarda o mapa do jogo (paredes, corredores e labirintos) e responde
-// perguntas de colisao com paredes para os dois jogadores.
-//
-// A tela do Hack tem 512 x 256 pixels. Como cada sprite tem 16 x 16 pixels,
+// Guarda o mapa do jogo e soluciona as colisoes com paredes.
+// A tela do Hack tem 512 x 256 pixels. Cada sprite tem 16 x 16 pixels,
 // o mapa e uma grade de 32 colunas x 16 linhas (cada celula = 1 sprite).
 //   - Linha 0  : reservada para o placar e os relogios (HUD). Nunca e andavel.
 //   - Linhas 1..15 : labirinto.
@@ -21,23 +17,23 @@ class GameMap {
    field Array twoPow;  // twoPow[i] = 2^i (mascara do bit i)
    field int level;     // mapa carregado atualmente (0, 1 ou 2)
 
-   /** Cria o mapa vazio e prepara a tabela de potencias de 2. */
+   /** Cria o mapa vazio e prepara a tabela de potências de 2. */
    constructor GameMap new() {
-      var int i, v;
+      var int bitIndex, powerOfTwo;
       let grid = Array.new(32);
       let twoPow = Array.new(16);
       let level = 0;
-      let i = 0;
-      let v = 1;
-      while (i < 16) {
-         let twoPow[i] = v;
-         let v = v + v;
-         let i = i + 1;
+      let bitIndex = 0;
+      let powerOfTwo = 1;
+      while (bitIndex < 16) {
+         let twoPow[bitIndex] = powerOfTwo;
+         let powerOfTwo = powerOfTwo + powerOfTwo;
+         let bitIndex = bitIndex + 1;
       }
       return this;
    }
 
-   /** Libera a memoria do mapa. */
+   /** Libera a memória do mapa. */
    method void dispose() {
       do grid.dispose();
       do twoPow.dispose();
@@ -45,22 +41,22 @@ class GameMap {
       return;
    }
 
-   /** Define as duas palavras (colunas 0..15 e 16..31) de uma linha. */
-   method void setRow(int row, int lo, int hi) {
-      let grid[row * 2] = lo;
-      let grid[(row * 2) + 1] = hi;
+   /** Define as duas palavras de uma linha. */
+   method void setRow(int row, int leftWord, int rightWord) {
+      let grid[row * 2] = leftWord;
+      let grid[(row * 2) + 1] = rightWord;
       return;
    }
 
-   /** Retorna true se a celula (col, row) e parede ou esta fora da tela. */
+   /** Retorna true se a célula (col, row) e parede ou está fora da tela. */
    method boolean isWall(int col, int row) {
-      var int w, b;
+      var int wallMask, bitIndex;
       if ((col < 0) | (col > 31) | (row < 0) | (row > 15)) {
          return true;
       }
-      let w = grid[(row * 2) + (col / 16)];
-      let b = col & 15;                       // coluna dentro da palavra
-      return ~((w & twoPow[b]) = 0);
+      let wallMask = grid[(row * 2) + (col / 16)];
+      let bitIndex = col & 15;                // coluna dentro da palavra
+      return ~((wallMask & twoPow[bitIndex]) = 0);
    }
 
    /**
@@ -76,11 +72,7 @@ class GameMap {
       return false;
    }
 
-   /** Retorna o numero do mapa carregado. */
-   method int getLevel() {
-      return level;
-   }
-
+   /** Define o mapa atual (0, 1 ou 2). */
    method void setLevel(int newLevel){
       let level = newLevel;
 
@@ -90,7 +82,7 @@ class GameMap {
    /** Carrega o mapa de numero n (0, 1 ou 2). */
    method void load(int n) {
       let level = n;
-      do setRow(0, -1, -1);   // linha 0 = HUD, nao e andavel
+      do setRow(0, -1, -1);   // A linha 0 = HUD, não é andavel!
       if (n = 0) { do loadMap0(); }
       if (n = 1) { do loadMap1(); }
       if (n = 2) { do loadMap2(); }
@@ -115,13 +107,13 @@ class GameMap {
 
    /** Desenha um bloco de parede 16x16 (16 palavras de 16 bits). */
    method void drawWall(int col, int row) {
-      var int addr, i;
-      let addr = 16384 + (row * 512) + col;
-      let i = 0;
-      while (i < 16) {
-         do Memory.poke(addr, -1);
-         let addr = addr + 32;
-         let i = i + 1;
+      var int address, pixelRow;
+      let address = 16384 + (row * 512) + col;
+      let pixelRow = 0;
+      while (pixelRow < 16) {
+         do Memory.poke(address, -1);
+         let address = address + 32;
+         let pixelRow = pixelRow + 1;
       }
       return;
    }
@@ -185,5 +177,4 @@ class GameMap {
         do setRow(15, -1, -1);
         return;
     }
-
 }

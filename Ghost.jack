@@ -3,14 +3,15 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/09/Square/Square.jack
 
-/** Implements a graphical square. */
-class Ghost {
 
-   field int x, y; // screen location of the square's top-left corner
-   field int size; // length of this square, in pixels
+class Ghost {
+   /** Implementa um fantasma na tela.*/
+   
+   field int x, y; // Localizacao do fantasma (em pixels)
+   field int size; // Tamanho do fantasma (em pixels)
    field int memAddress;
 
-   /** Constructs a new square with a given location and size. */
+   /** Constrói um novo fantasma com uma determinada localização e tamanho. */
    constructor Ghost new(int Ax, int Ay) {
       let x = Ax;
       let y = Ay;
@@ -20,7 +21,7 @@ class Ghost {
       return this;
    }
 
-   /** Disposes this square. */
+   /** Faz o dispose do fantasma na memória. */
    method void dispose() {
       do Memory.deAlloc(this);
       return;
@@ -38,6 +39,10 @@ class Ghost {
       return size;
    }
 
+   /*
+   Apaga o Ghost da tela para atualizar seu X e Y 
+   e desenhar novamente em sua nova posição 
+   */
    method void setPosition(int newX, int newY) {
       do erase();
       let x = newX;
@@ -46,19 +51,20 @@ class Ghost {
       return;
    }
 
-   /** Draws the square on the screen. */
+   /** Desenha o fantasma na tela. */
    method void draw() {
       do drawHappyGhost(y * 32 + (x/size));
       return;
    }
 
-   /** Erases the square from the screen. */
+   /** Apaga o Ghost da te. */
    method void erase() {
       do Screen.setColor(false);
       do Screen.drawRectangle(x, y, x + size - 1, y + size - 1);
       return;
    }
 
+   /** Desenha um fantasma feliz na tela, na posicao location (0..7679) */
    method void drawHappyGhost(int location) {
       let memAddress = 16384 + location;
       do Memory.poke(memAddress + 0, 8184);
@@ -80,7 +86,7 @@ class Ghost {
       return;
    }
 
-   /** Moves the ghost up by 16 pixels. */
+   /** Movimenta o fantasma para cima por 16 pixels. */
    method void moveUp() {
       if (y > 47) {
          do erase();
@@ -90,7 +96,7 @@ class Ghost {
       return;
    }
 
-   /** Moves the square down by 16 pixels. */
+   /** Movimenta o fantasma para baixo por 16 pixels. */
    method void moveDown() {
       if ((y + size) < 240) {
          do erase();
@@ -100,7 +106,7 @@ class Ghost {
       return;
    }
 
-   /** Moves the ghost left by 16 pixels. */
+   /** Movimenta o fantasma para a esquerda por 16 pixels. */
    method void moveLeft() {
       if (x > 31) {
          do erase();
@@ -110,7 +116,7 @@ class Ghost {
       return;
    }
 
-   /** Moves the square right by 16 pixels. */
+   /** Movimenta o fantasma para a direita por 16 pixels. */
    method void moveRight() {
       if ((x + size) < 496) {
          do erase();
