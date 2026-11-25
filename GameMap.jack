@@ -3,14 +3,11 @@
 // o mapa e uma grade de 32 colunas x 16 linhas (cada celula = 1 sprite).
 //   - Linha 0  : reservada para o placar e os relogios (HUD). Nunca e andavel.
 //   - Linhas 1..15 : labirinto.
-//
 // Representacao: cada linha da grade ocupa 2 palavras de 16 bits
 // (palavra 0 = colunas 0..15, palavra 1 = colunas 16..31).
 // Bit = 1 significa PAREDE; o bit i da palavra corresponde a coluna i.
-// Isso gasta apenas 32 palavras de memoria por mapa.
-//
+// Isso gasta apenas 32 palavras de memória por mapa.
 // Existem 3 mapas fixos (0, 1 e 2). O jogo troca de mapa a cada reinicio.
-// Acima de cada linha de setRow() ha o desenho do mapa ('#' = parede).
 
 class GameMap {
    field Array grid;    // 16 linhas x 2 palavras
@@ -59,11 +56,10 @@ class GameMap {
       return ~((wallMask & twoPow[bitIndex]) = 0);
    }
 
-   /**
-    * Retorna true se quem esta em (col, row) consegue dar um passo na
-    * direcao dir sem bater em parede.
-    * dir: 1 = cima, 2 = baixo, 3 = esquerda, 4 = direita.
-    */
+   /** Retorna true se quem esta em (col, row) consegue dar um passo na
+   direcao dir sem bater em parede.
+   dir: 1 = cima, 2 = baixo, 3 = esquerda, 4 = direita.
+   Retorna false se (col, row) estiver fora da tela ou dir = 0. */
    method boolean canMove(int col, int row, int dir) {
       if (dir = 1) { return ~isWall(col, row - 1); }
       if (dir = 2) { return ~isWall(col, row + 1); }

@@ -1,14 +1,8 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/09/Square/Square.jack
-
-
 class Human {
    /**  Implementa o Human */
 
-   field int x, y; // screen location of the square's top-left corner
-   field int size; // length of this square, in pixels
+   field int x, y; // Localizacao do Human (em pixels).
+   field int size; // Tamanho do Human (em pixels).
    field int memAddress;
 
    /** Cria um novo Human com base nas posições X e Y */
@@ -21,7 +15,7 @@ class Human {
       return this;
    }
 
-   /** Disposes this square. */
+   /** Esse método faz o dispose do Human na memória. */
    method void dispose() {
       do Memory.deAlloc(this);
       return;
@@ -64,11 +58,10 @@ class Human {
       return;
    }
 
-   /** Desenha o Human na tela */
+   /** Desenha o sprite do Human direto na memória de vídeo a partir de location. Cada poke escreve uma linha de 16 pixels do sprite
+   (+32 palavras = próxima linha) */
    method void drawHuman(int location) {
         let memAddress = 16384 + location;
-        // column 0
-        // column 0
         do Memory.poke(memAddress, 384);
         do Memory.poke(memAddress + 32, 960);
         do Memory.poke(memAddress + 64, 960);
@@ -88,7 +81,7 @@ class Human {
         return;
     }
 
-   /** Moves the ghost up by 16 pixels. */
+   /** Movimenta o Human para cima por 16 pixels. */
    method void moveUp() {
       if (y > 47) {
          do erase();

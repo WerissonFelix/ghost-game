@@ -1,5 +1,5 @@
 class HumanGame {
-   field int direction; // the square's current direction: 
+   field int direction; // A direção em que o humano se desloca: 
                         // 0=none, 1=up, 2=down, 3=left, 4=right
    field Random random;
    field Human human;
@@ -8,7 +8,7 @@ class HumanGame {
    constructor HumanGame new(int Ax, int Ay) {
       let human = Human.new(Ax, Ay);
       let random = Random.new(19);
-      let direction = 0;  // initial state is no movement
+      let direction = 0;  // Estado inicial é sem movimento
       return this;
    }
 
@@ -45,13 +45,13 @@ class HumanGame {
       return human.getSize();
    }
 
-   /** Atualiza a posição X e Ydo humano. */
+   /** Atualiza a posição X e Y do humano. */
    method void setPosition(int newX, int newY) {
       do human.setPosition(newX, newY);
       return;
    }
 
-   /** Move o humano para uma determinada direção. */
+   /** Atualiza a direção em que o humano se desloca */
    method void setDirection(int new_direction){
       let direction = new_direction;
 

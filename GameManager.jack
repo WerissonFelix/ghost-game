@@ -81,7 +81,7 @@ class GameManager{
         if ((ghostY + ghostSize) < humanY) { return false; }
         if ((humanY + humanSize) < ghostY) { return false; }
      
-        // Identifica se as hitboxes apenas se tocam pelas bordas.    
+        // Identifica se as hitboxes apenas se tocam pelas bordas, isso é ignora o caso em que as hitboxes se tocam apenas pelo canto.    
         let xTouch = ((ghostX + ghostSize) = humanX) | ((humanX + humanSize) = ghostX);
         let yTouch = ((ghostY + ghostSize) = humanY) | ((humanY + humanSize) = ghostY);
         if (xTouch & yTouch) { 
@@ -92,7 +92,8 @@ class GameManager{
         return true;
     }
 
-    /** Inicia uma nova rodada do jogo, criando um novo fantasma e humano em posições aleatórias no mapa */
+    /** Inicia uma nova rodada do jogo, criando um novo fantasma e humano em posições aleatórias no mapa. Também carrega e desenha o mapa
+    além de alternar o nível entre os mapas 0, 1 e 2. */
     method void startRound() {
         var int ghostColumn, ghostRow, humanColumn, humanRow;
 
@@ -148,7 +149,7 @@ class GameManager{
         do Output.moveCursor(8, 10);
         do Output.printString("Jogador 1 (Fantasma): setas = direcao, . = parar");
         do Output.moveCursor(10, 10);
-        do Output.printString("Jogador 2 (Pessoa): W A S D = direcao, E = parar");
+        do Output.printString("Jogador 2 (Pessoa): w a s d = direcao, e = parar");
         do Output.moveCursor(12, 10);
         do Output.printString("ESC = sair");
         do Output.moveCursor(15, 17);
@@ -249,11 +250,11 @@ class GameManager{
             
             // Controles do Human
             if (key = 140)  { let exit = true; }            // ESC key
-            if (key = 101)  { do human.setDirection(0); }   // E - Idle
-            if (key = 119)  { do human.setDirection(1); }   // W - up
-            if (key = 115)  { do human.setDirection(2); }   // S - down
-            if (key = 97)   { do human.setDirection(3); }   // A - left
-            if (key = 100)  { do human.setDirection(4); }   // D - right
+            if (key = 101)  { do human.setDirection(0); }   // e - Idle
+            if (key = 119)  { do human.setDirection(1); }   // w - up
+            if (key = 115)  { do human.setDirection(2); }   // s - down
+            if (key = 97)   { do human.setDirection(3); }   // a - left
+            if (key = 100)  { do human.setDirection(4); }   // d - right
 
             if (map.canMove(ghost.getX() / 16, ghost.getY() / 16, ghost.getDirection())) {
                 do ghost.moveGhost();
@@ -294,14 +295,14 @@ class GameManager{
                     /* 
                     Decrementa 1 segundo enquanto o humanTimer não chegar a zero.
                     o Ghost não pode se mover enquanto o humanTimer for maior que 
-                    zero.
+                    zero. 
                     */
                     do humanTimer.decrement();
                     do humanTimer.printTime(0, 7); 
+                    if (humanTimer.isFinished()) { let canGhostMove = true;}
 
                 }
                 else{
-                    let canGhostMove = true;
 
                     if (~(ghostTimer.isFinished())){
                         // Decrementa 1 segundo enquanto o ghostTimer não chegar a zero
